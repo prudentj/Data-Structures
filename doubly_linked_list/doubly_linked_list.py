@@ -1,5 +1,7 @@
 """Each ListNode holds a reference to its previous node
 as well as its next node in the List."""
+
+
 class ListNode:
     def __init__(self, value, prev=None, next=None):
         self.value = value
@@ -9,6 +11,7 @@ class ListNode:
     """Wrap the given value in a ListNode and insert it
     after this node. Note that this node could already
     have a next node it is point to."""
+
     def insert_after(self, value):
         current_next = self.next
         self.next = ListNode(value, self, current_next)
@@ -18,6 +21,7 @@ class ListNode:
     """Wrap the given value in a ListNode and insert it
     before this node. Note that this node could already
     have a previous node it is point to."""
+
     def insert_before(self, value):
         current_prev = self.prev
         self.prev = ListNode(value, current_prev, self)
@@ -26,7 +30,9 @@ class ListNode:
 
     """Rearranges this ListNode's previous and next pointers
     accordingly, effectively deleting this ListNode."""
+
     def delete(self):
+        # I need to figure out how to dealocate memory in python!
         if self.prev:
             self.prev.next = self.next
         if self.next:
@@ -35,6 +41,8 @@ class ListNode:
 
 """Our doubly-linked list class. It holds references to
 the list's head and tail nodes."""
+
+
 class DoublyLinkedList:
     def __init__(self, node=None):
         self.head = node
@@ -44,45 +52,124 @@ class DoublyLinkedList:
     def __len__(self):
         return self.length
 
-    """Wraps the given value in a ListNode and inserts it 
-    as the new head of the list. Don't forget to handle 
+    """Wraps the given value in a ListNode and inserts it
+    as the new head of the list. Don't forget to handle
     the old head node's previous pointer accordingly."""
+
     def add_to_head(self, value):
-        pass
+        self.length += 1
+        if(self.head == None and self.tail == None):
+            newNode = ListNode(value)
+            self.head = newNode
+            self.tail = newNode
+        else:
+            # Make a new node with next have the current value of head and assign it to head
+            newNode = ListNode(value, None, self.head)
+            self.head = newNode
+            self.head.next.prev = newNode
 
     """Removes the List's current head node, making the
     current head's next node the new head of the List.
     Returns the value of the removed Node."""
+
     def remove_from_head(self):
-        pass
-
-    """Wraps the given value in a ListNode and inserts it 
-    as the new tail of the list. Don't forget to handle 
+        # Do we need to dealocated memory?
+        # self.head.next
+        value = self.head.value
+        self.delete(self.head)
+        return value
+    """Wraps the given value in a ListNode and inserts it
+    as the new tail of the list. Don't forget to handle
     the old tail node's next pointer accordingly."""
-    def add_to_tail(self, value):
-        pass
 
-    """Removes the List's current tail node, making the 
+    def add_to_tail(self, value):
+        self.length += 1
+        if(self.head == None and self.tail == None):
+            newNode = ListNode(value)
+            self.tail = newNode
+            self.head = newNode
+        else:
+            newNode = ListNode(value, self.tail, None)
+            self.tail = newNode
+            newNode.prev.next = newNode
+
+    """Removes the List's current tail node, making the
     current tail's previous node the new tail of the List.
     Returns the value of the removed Node."""
+
     def remove_from_tail(self):
-        pass
+        value = self.tail.value
+        self.delete(self.tail)
+        return value
 
-    """Removes the input node from its current spot in the 
+    """Removes the input node from its current spot in the
     List and inserts it as the new head node of the List."""
-    def move_to_front(self, node):
-        pass
 
-    """Removes the input node from its current spot in the 
+    def move_to_front(self, node):
+        value = node.value
+        self.delete(node)
+        self.add_to_head(value)
+
+    """Removes the input node from its current spot in the
     List and inserts it as the new tail node of the List."""
+
     def move_to_end(self, node):
-        pass
+        value = node.value
+        self.delete(node)
+        self.add_to_tail(value)
 
     """Removes a node from the list and handles cases where
     the node was the head or the tail"""
+
     def delete(self, node):
-        pass
-        
+        self.length -= 1
+        if self.head == self.tail:
+            self.head.delete()
+            self.head = None
+            self.tail = None
+        elif self.head == node:
+            self.head = node.next
+            self.head.prev = None
+            node.delete()
+        elif self.tail == node:
+            self.tail = node.prev
+            self.tail.next = None
+            node.delete()
+        # Middle of List Assuming that other function handeled connections
+        else:
+            node.prev.next = node.next
+            node.next.prev = node.prev
+            node.delete()
+
     """Returns the highest value currently in the list"""
+
     def get_max(self):
-        pass
+        highest = self.head.value
+        current = self.head
+        while True:
+            if current.value > highest:
+                highest = current.value
+            if current.next == None:
+                break
+
+            if self.length == 1:
+                break
+            current = current.next
+
+        return highest
+
+    def printValues(self):
+        current = self.head
+        while True:
+            print(current.value)
+            if current.next == None:
+                print("End")
+                break
+
+            if self.length == 1:
+                print("End")
+                break
+            if current == current.next:
+                print("My head is my tail")
+                break
+            current = current.next
