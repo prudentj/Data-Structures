@@ -55,6 +55,7 @@ class DoublyLinkedList:
     """Wraps the given value in a ListNode and inserts it
     as the new head of the list. Don't forget to handle
     the old head node's previous pointer accordingly."""
+# Creates a node at the front of the list
 
     def add_to_head(self, value):
         self.length += 1
@@ -71,6 +72,7 @@ class DoublyLinkedList:
     """Removes the List's current head node, making the
     current head's next node the new head of the List.
     Returns the value of the removed Node."""
+    # Removes the first node from the list
 
     def remove_from_head(self):
         # Do we need to dealocated memory?
@@ -81,13 +83,16 @@ class DoublyLinkedList:
     """Wraps the given value in a ListNode and inserts it
     as the new tail of the list. Don't forget to handle
     the old tail node's next pointer accordingly."""
+    # Creates a new node at the end of the list
 
     def add_to_tail(self, value):
         self.length += 1
+        # If the list is empty make it the head and tail
         if(self.head == None and self.tail == None):
             newNode = ListNode(value)
             self.tail = newNode
             self.head = newNode
+        # Makes a new node on the tail
         else:
             newNode = ListNode(value, self.tail, None)
             self.tail = newNode
@@ -96,6 +101,7 @@ class DoublyLinkedList:
     """Removes the List's current tail node, making the
     current tail's previous node the new tail of the List.
     Returns the value of the removed Node."""
+    # deletes the last node and returns the value
 
     def remove_from_tail(self):
         value = self.tail.value
@@ -104,6 +110,7 @@ class DoublyLinkedList:
 
     """Removes the input node from its current spot in the
     List and inserts it as the new head node of the List."""
+    # Deletes it at current node and adds a new node to the front of the list
 
     def move_to_front(self, node):
         value = node.value
@@ -113,39 +120,49 @@ class DoublyLinkedList:
     """Removes the input node from its current spot in the
     List and inserts it as the new tail node of the List."""
 
+    # Deletes a node at its current location and adds to the end of list
     def move_to_end(self, node):
         value = node.value
         self.delete(node)
         self.add_to_tail(value)
 
-    """Removes a node from the list and handles cases where
-    the node was the head or the tail"""
+    # """Removes a node from the list and handles cases where
+    # the node was the head or the tail"""
 
     def delete(self, node):
         self.length -= 1
+        # If it is the only node, set head and tail to none
         if self.head == self.tail:
             self.head.delete()
             self.head = None
             self.tail = None
+        # If it is the first node
+        # Est new head
         elif self.head == node:
             self.head = node.next
             self.head.prev = None
             node.delete()
+        # If it is the last node
+        # Established new tail
         elif self.tail == node:
             self.tail = node.prev
             self.tail.next = None
             node.delete()
         # Middle of List Assuming that other function handeled connections
+        # connects the node before and after the node to each other and deletes it
         else:
             node.prev.next = node.next
             node.next.prev = node.prev
             node.delete()
 
-    """Returns the highest value currently in the list"""
+
+# """Returns the highest value currently in the list"""
 
     def get_max(self):
         highest = self.head.value
         current = self.head
+        # Do while it isn't the last node or only node
+        # Checks to see if each node is higher than current highest
         while True:
             if current.value > highest:
                 highest = current.value
@@ -158,6 +175,7 @@ class DoublyLinkedList:
 
         return highest
 
+# Prints every value in the array for troubleshooting the array
     def printValues(self):
         current = self.head
         while True:
