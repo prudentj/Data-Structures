@@ -1,7 +1,7 @@
 """
-Binary search trees are a data structure that enforce an ordering over 
-the data they store. That ordering in turn makes it a lot more efficient 
-at searching for a particular piece of data in the tree. 
+Binary search trees are a data structure that enforce an ordering over
+the data they store. That ordering in turn makes it a lot more efficient
+at searching for a particular piece of data in the tree.
 
 This part of the project comprises two days:
 1. Implement the methods `insert`, `contains`, `get_max`, and `for_each`
@@ -16,6 +16,7 @@ class BinarySearchTree:
         self.value = value
         self.left = None
         self.right = None
+        self.level = 0
 
     # Insert the given value into the tree
     def insert(self, value):
@@ -27,6 +28,7 @@ class BinarySearchTree:
                 self.right.insert(value)
             else:
                 self.right = BinarySearchTree(value)
+                self.right.level = self.level + 1
         # Less than add it to the left
         # If there is a node there pass the value it it
         # Else make a node
@@ -35,6 +37,7 @@ class BinarySearchTree:
                 self.left.insert(value)
             else:
                 self.left = BinarySearchTree(value)
+                self.left.level = self.level + 1
 
     # Return True if the tree contains the value
     # False if it does not
@@ -43,16 +46,16 @@ class BinarySearchTree:
         if self.value == target:
             return True
         # If the value we want is here it is to the right
-        elif target > self.value:
-            if self.right:
-                self.right.contains(target)
+        if target < self.value:
+            if self.left:
+                return self.left.contains(target)
             else:
                 # It does not exist
                 return False
         # If the value we want is here it is to the left
-        elif target < self.value:
-            if self.left:
-                self.left.contains(target)
+        else:
+            if self.right:
+                return self.right.contains(target)
             else:
                 # It does not exist
                 return False
@@ -60,7 +63,7 @@ class BinarySearchTree:
     # Return the maximum value found in the tree
     def get_max(self):
         if self.right:
-            self.right.get_max()
+            return self.right.get_max()
         else:
             return self.value
 
@@ -68,9 +71,9 @@ class BinarySearchTree:
     # If left or right exist call that function
     def for_each(self, fn):
         fn(self.value)
-        if(self.right):
+        if self.right:
             self.right.for_each(fn)
-        if(self.left):
+        if self.left:
             self.left.for_each(fn)
 
     # Part 2 -----------------------
@@ -79,27 +82,64 @@ class BinarySearchTree:
     # Hint:  Use a recursive, depth first traversal
 
     def in_order_print(self, node):
-        # if self.left:
-        #     self.left.in_order_print(node)
-        pass
+        if node.left:
+            node.left.in_order_print(node.left)
+        print(node.value)
+        if node.right:
+            node.right.in_order_print(node.right)
 
     # Print the value of every node, starting with the given node,
     # in an iterative breadth first traversal
+
     def bft_print(self, node):
-        pass
+        # When there isn't a node
+        if node == None:
+            return
+        queue = []
+        # Appends itself
+        queue.append(node)
+        while(len(queue) > 0):
+            print(queue[0].value)
+            current = queue.pop(0)
+            if current.left != None:
+                queue.append(current.left)
+            if current.right != None:
+                queue.append(current.right)
 
     # Print the value of every node, starting with the given node,
     # in an iterative depth first traversal
+
     def dft_print(self, node):
-        pass
+        print(node.value)
+
+        if node.right:
+            node.right.dft_print(node.right)
+        if node.left:
+            node.left.dft_print(node.left)
 
     # Stretch Goals -------------------------
     # Note: Research may be required
 
     # Print Pre-order recursive DFT
+
     def pre_order_dft(self, node):
         pass
 
     # Print Post-order recursive DFT
     def post_order_dft(self, node):
         pass
+
+
+# bst = BinarySearchTree(1)
+# bst.insert(8)
+# bst.insert(5)
+# bst.insert(7)
+# bst.insert(6)
+# bst.insert(3)
+# bst.insert(4)
+# bst.insert(2)
+
+# # bst.in_order_print(bst)
+# bst.dft_print(bst)
+# # "1\n8\n5\n7\n6\n3\n4\n2\n" or
+# # output == "1\n8\n5\n3\n2\n4\n7\n6\n")
